@@ -182,8 +182,68 @@ public class Consola {
         }
 
         TipoHabitacion tipoHabitacion = leerTipoHabitacion();
+        int op =0;
+        int op2 = 0;
+        switch (tipoHabitacion) {
+            case SIMPLE:
+                return new Simple(planta, puerta, precio);
+            case DOBLE:
+                System.out.println("Inserta el numero para elegir la opcion:\n1.- 2 camas individuales\n2.- 1 cama doble");
+                op = Entrada.entero();
+                if((op < 1 || op >2)) {
+                    throw new IllegalArgumentException("Opción no válida.");
+                }
+                    if(op==1){
+                        return new Doble(planta, puerta, precio,2,0);
+                    } else if (op==2) {
+                     return new Doble(planta, puerta, precio, 0,1);
+                    }
+            case TRIPLE:
+                int banos = 0;
+                System.out.println("Inserta el numero para elegir la opcion:\n1.- 3 camas individuales\n2.- 1 cama doble y 1 cama individual");
+                op = Entrada.entero();
 
-        return new Habitacion(planta, puerta, precio, tipoHabitacion);
+                System.out.println("Inserta el numero para elegir la opcion:\n1.- 0 baños\n2.- 1 baño");
+                op2 = Entrada.entero();
+                
+                if(op < 1 || op >2|| op2 < 1 || op2 >2) {
+                    throw new IllegalArgumentException("Opción no válida.");
+                }
+                if(op2 == 1){
+                    banos = 0;
+                } else if (op2 ==2){
+                    banos = 1;
+                }
+                if(op==1){
+                    return new Triple(planta, puerta, precio, banos, 3,0);
+                } else if (op==2) {
+                    return new Triple(planta, puerta, precio,banos, 1,1);
+                }
+            case SUITE:
+                System.out.println("Inserta el numero para elegir la opcion:\n1.- 1 baño\n2.- 2 baños");
+                op = Entrada.entero();
+                
+                System.out.println("¿Tiene Jacuzzi?:\n1.- Si\n2.- No");
+                op2 = Entrada.entero();
+                
+                boolean jacuzzi = false;
+               
+                if(op < 1 || op >2 || op2 < 1 || op2 >2 ) {
+                    throw new IllegalArgumentException("Opción no válida.");
+                }
+                
+                if(op2==1){
+                    jacuzzi = true;
+                }
+                
+                if(op==1){
+                    return new Suite(planta, puerta, precio,1,jacuzzi);
+                } else if (op==2) {
+                    return new Suite(planta, puerta, precio, 2,jacuzzi);
+                }
+            default:
+                throw new IllegalArgumentException("Tipo de habitación no válido.");
+        }
     }
 
 
