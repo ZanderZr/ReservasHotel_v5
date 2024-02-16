@@ -1,6 +1,6 @@
 # Tarea: Reservas Hotel V3
 ## Profesor: Andrés Rubio del Río
-## Alumno:
+## Alumno: Juan Carlos Lopez Fenoy
 
 Ahora que ya tienes afianzados los conceptos básicos de la Programación Orientada a Objetos, es un buen momento para llevar a cabo algunas modificaciones que afectan al modelo diseñado ya que hay conceptos avanzados 
 de la Programación Orientada a Objetos que aún no han sido vistos en las unidades anteriores y que deberían ser aplicados. Por tal motivo, en este **cuarto spring** se van a llevar a cabo una serie de modificaciones 
