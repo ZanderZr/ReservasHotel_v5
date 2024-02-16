@@ -50,7 +50,16 @@ public class Reserva {
     }
 
     public Habitacion getHabitacion() {
-        return habitacion;
+        if (habitacion instanceof Simple) {
+            return new Simple((Simple) habitacion);
+        } else if (habitacion instanceof Doble) {
+            return new Doble((Doble) habitacion);
+        } else if (habitacion instanceof Triple) {
+            return new Triple((Triple) habitacion);
+        } else if (habitacion instanceof Suite) {
+            return new Suite((Suite) habitacion);
+        }
+        return null;
     }
 
     public Regimen getRegimen() {
@@ -86,7 +95,15 @@ public class Reserva {
     }
 
     public void setHabitacion(Habitacion habitacion) {
-        this.habitacion = habitacion;
+        if (habitacion instanceof Simple) {
+            this.habitacion = new Simple((Simple) habitacion);
+        }else if (habitacion instanceof Doble) {
+            this.habitacion = new Doble((Doble) habitacion);
+        } else if (habitacion instanceof Triple) {
+            this.habitacion = new Triple((Triple) habitacion);
+        } else if (habitacion instanceof Suite) {
+            this.habitacion = new Suite((Suite) habitacion);
+        }
     }
 
     public void setRegimen(Regimen regimen) {
@@ -155,7 +172,7 @@ public class Reserva {
 
 
     public void setNumeroPersonas(int numeroPersonas) {
-        if (numeroPersonas > habitacion.getTipoHabitacion().getNumeroMaximoPersonas()) {
+        if (numeroPersonas > habitacion.getNumeroMaximoPersonas()) {
             throw new IllegalArgumentException("El n�mero de personas supera el n�mero m�ximo permitido para este tipo de habitaci�n.");
         }
         this.numeroPersonas = numeroPersonas;
@@ -182,7 +199,7 @@ public class Reserva {
     public String toString() {
         return "Reserva{" +
                 "huesped=" + huesped +
-                ", habitacion=" + habitacion +
+                ", habitacion=" + habitacion.toString() +
                 ", regimen=" + regimen +
                 ", fechaInicioReserva=" + fechaInicioReserva +
                 ", fechaFinReserva=" + fechaFinReserva +
