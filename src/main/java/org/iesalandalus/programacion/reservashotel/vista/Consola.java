@@ -188,11 +188,13 @@ public class Consola {
             case SIMPLE:
                 return new Simple(planta, puerta, precio);
             case DOBLE:
+
+                do{
                 System.out.println("Inserta el numero para elegir la opcion:\n1.- 2 camas individuales\n2.- 1 cama doble");
                 op = Entrada.entero();
-                if((op < 1 || op >2)) {
-                    throw new IllegalArgumentException("Opción no válida.");
                 }
+                while (op < 1 || op >2);
+
                     if(op==1){
                         return new Doble(planta, puerta, precio,2,0);
                     } else if (op==2) {
@@ -200,15 +202,14 @@ public class Consola {
                     }
             case TRIPLE:
                 int banos = 0;
-                System.out.println("Inserta el numero para elegir la opcion:\n1.- 3 camas individuales\n2.- 1 cama doble y 1 cama individual");
-                op = Entrada.entero();
+                do {
+                    System.out.println("Inserta el numero para elegir la opcion:\n1.- 3 camas individuales\n2.- 1 cama doble y 1 cama individual");
+                    op = Entrada.entero();
 
-                System.out.println("Inserta el numero para elegir la opcion:\n1.- 0 baños\n2.- 1 baño");
-                op2 = Entrada.entero();
-                
-                if(op < 1 || op >2|| op2 < 1 || op2 >2) {
-                    throw new IllegalArgumentException("Opción no válida.");
-                }
+                    System.out.println("Inserta el numero para elegir la opcion:\n1.- 0 baños\n2.- 1 baño");
+                    op2 = Entrada.entero();
+                } while (op < 1 || op >2|| op2 < 1 || op2 >2);
+
                 if(op2 == 1){
                     banos = 0;
                 } else if (op2 ==2){
@@ -220,21 +221,16 @@ public class Consola {
                     return new Triple(planta, puerta, precio,banos, 1,1);
                 }
             case SUITE:
-                System.out.println("Inserta el numero para elegir la opcion:\n1.- 1 baño\n2.- 2 baños");
-                op = Entrada.entero();
-                
-                System.out.println("¿Tiene Jacuzzi?:\n1.- Si\n2.- No");
-                op2 = Entrada.entero();
-                
                 boolean jacuzzi = false;
-               
-                if(op < 1 || op >2 || op2 < 1 || op2 >2 ) {
-                    throw new IllegalArgumentException("Opción no válida.");
-                }
-                
-                if(op2==1){
-                    jacuzzi = true;
-                }
+                do {
+                    System.out.println("Inserta el numero para elegir la opcion:\n1.- 1 baño\n2.- 2 baños");
+                    op = Entrada.entero();
+
+                    System.out.println("¿Tiene Jacuzzi?:\n1.- Si\n2.- No");
+                    op2 = Entrada.entero();
+                } while (op < 1 || op >2 || op2 < 1 || op2 >2 );
+
+                if(op2==1){ jacuzzi = true; }
                 
                 if(op==1){
                     return new Suite(planta, puerta, precio,1,jacuzzi);
@@ -260,7 +256,7 @@ public class Consola {
             puerta = Entrada.entero();
         } while (puerta < 1 || puerta > 15);
 
-        return new Habitacion(planta, puerta, 50.0, TipoHabitacion.TRIPLE);
+        return new Simple(planta, puerta, 50.0);
     }
 
 
