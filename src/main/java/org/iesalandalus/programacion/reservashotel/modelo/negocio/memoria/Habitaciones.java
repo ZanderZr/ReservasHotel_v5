@@ -1,24 +1,53 @@
-package org.iesalandalus.programacion.reservashotel.modelo.negocio;
+package org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria;
 
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
+
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-public class Habitaciones {
+public class Habitaciones implements IHabitaciones {
     private ArrayList<Habitacion> coleccionHabitaciones;
 
     public Habitaciones() {
         this.coleccionHabitaciones = new ArrayList<>();
     }
 
-    // He unido la copia profunda y el get en uno
+
     public ArrayList<Habitacion> get() {
-        ArrayList<Habitacion> copia = new ArrayList<>();
+
+        return new ArrayList<>(coleccionHabitaciones);
+    }
+
+    public ArrayList<Habitacion> get(TipoHabitacion tipoHabitacion) {
+        ArrayList<Habitacion> habitacionesTipo = new ArrayList<>();
         for (Habitacion habitacion : coleccionHabitaciones) {
-            copia.add(new Habitacion(habitacion));
+            switch (tipoHabitacion){
+                case SIMPLE :
+                    if (habitacion instanceof Simple) {
+                    habitacionesTipo.add(habitacion);
+                }
+                    break;
+                case DOBLE:
+                    if (habitacion instanceof Doble) {
+                        habitacionesTipo.add(habitacion);
+                    }
+                    break;
+                case TRIPLE:
+                    if (habitacion instanceof Triple) {
+                        habitacionesTipo.add(habitacion);
+                    }
+                    break;
+                case SUITE:
+                    if (habitacion instanceof Suite) {
+                        habitacionesTipo.add(habitacion);
+                    }
+                    break;
+            }
+
         }
-        return copia;
+        return habitacionesTipo;
     }
 
     public int getTamano() {

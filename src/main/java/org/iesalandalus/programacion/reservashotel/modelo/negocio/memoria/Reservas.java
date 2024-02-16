@@ -1,9 +1,7 @@
-package org.iesalandalus.programacion.reservashotel.modelo.negocio;
+package org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria;
 
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Reserva;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.TipoHabitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
@@ -13,7 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
-public class Reservas {
+public class Reservas implements IReservas {
     private ArrayList<Reserva> coleccionReservas;
 
     public Reservas(){
@@ -21,11 +19,7 @@ public class Reservas {
     }
 
     public ArrayList<Reserva> get(){
-        ArrayList<Reserva> copia = new ArrayList<>();
-        for(Reserva reserva : coleccionReservas) {
-            copia.add(new Reserva(reserva));
-        }
-        return copia;
+        return new ArrayList<>(coleccionReservas);
     }
     public int getTamano(){
         return coleccionReservas.size();
@@ -37,13 +31,13 @@ public class Reservas {
         if (buscar(reserva) != null) {
             throw new OperationNotSupportedException("La reserva ya est� registrada y no se admiten repetidos.");
         }
-        coleccionReservas.add(reserva);
+        coleccionReservas.add(new Reserva(reserva));
     }
 
     public Reserva buscar(Reserva reserva) throws NoSuchElementException {
        int indice = coleccionReservas.indexOf(reserva);
        if (indice != -1) {
-           return coleccionReservas.get(indice);
+           return new Reserva(coleccionReservas.get(indice));
        }
        return null;
     }
@@ -70,8 +64,27 @@ public class Reservas {
     public ArrayList<Reserva> getReservas(TipoHabitacion tipoHabitacion) {
         ArrayList<Reserva> reservasTipoHabitacion = new ArrayList<>();
         for (Reserva reserva : coleccionReservas) {
-            if (reserva.getHabitacion().getTipoHabitacion().equals(tipoHabitacion)) {
-                reservasTipoHabitacion.add(new Reserva(reserva));
+            switch (tipoHabitacion){
+                case SIMPLE :
+                    if (reserva.getHabitacion() instanceof Simple) {
+                        reservasTipoHabitacion.add(new Reserva(reserva));
+                    }
+                    break;
+                case DOBLE:
+                    if (reserva.getHabitacion() instanceof Doble) {
+                        reservasTipoHabitacion.add(new Reserva(reserva));
+                    }
+                    break;
+                case TRIPLE:
+                    if (reserva.getHabitacion() instanceof Triple) {
+                        reservasTipoHabitacion.add(new Reserva(reserva));
+                    }
+                    break;
+                case SUITE:
+                    if (reserva.getHabitacion() instanceof Suite) {
+                        reservasTipoHabitacion.add(new Reserva(reserva));
+                    }
+                    break;
             }
         }
         if (reservasTipoHabitacion.isEmpty()) {

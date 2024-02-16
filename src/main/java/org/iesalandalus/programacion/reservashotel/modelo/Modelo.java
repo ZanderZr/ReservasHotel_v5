@@ -1,18 +1,14 @@
 package org.iesalandalus.programacion.reservashotel.modelo;
 
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
-import org.iesalandalus.programacion.reservashotel.modelo.negocio.Habitaciones;
-import org.iesalandalus.programacion.reservashotel.modelo.negocio.Huespedes;
-import org.iesalandalus.programacion.reservashotel.modelo.negocio.Reservas;
-import org.iesalandalus.programacion.reservashotel.vista.Consola;
-import org.iesalandalus.programacion.utilidades.Entrada;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Habitaciones;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Huespedes;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Reservas;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Modelo {

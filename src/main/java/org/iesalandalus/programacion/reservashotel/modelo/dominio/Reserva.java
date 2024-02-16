@@ -33,7 +33,6 @@ public class Reserva {
         setPrecio();
 
     }
-
     public Reserva(Reserva reserva){
         setHuesped(reserva.huesped);
         setHabitacion(reserva.habitacion);
@@ -44,10 +43,15 @@ public class Reserva {
         setPrecio();
 
     }
+    
 
     public Huesped getHuesped() {
         return huesped;
     }
+    public void setHuesped(Huesped huesped) {
+        this.huesped = huesped;
+    }
+
 
     public Habitacion getHabitacion() {
         if (habitacion instanceof Simple) {
@@ -61,39 +65,6 @@ public class Reserva {
         }
         return null;
     }
-
-    public Regimen getRegimen() {
-        return regimen;
-    }
-
-    public LocalDate getFechaInicioReserva() {
-        return fechaInicioReserva;
-    }
-
-    public LocalDate getFechaFinReserva() {
-        return fechaFinReserva;
-    }
-
-    public LocalDateTime getCheckIn() {
-        return checkIn;
-    }
-
-    public LocalDateTime getCheckOut() {
-        return checkOut;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public int getNumeroPersonas() {
-        return numeroPersonas;
-    }
-
-    public void setHuesped(Huesped huesped) {
-        this.huesped = huesped;
-    }
-
     public void setHabitacion(Habitacion habitacion) {
         if (habitacion instanceof Simple) {
             this.habitacion = new Simple((Simple) habitacion);
@@ -106,10 +77,18 @@ public class Reserva {
         }
     }
 
+
+    public Regimen getRegimen() {
+        return regimen;
+    }
     public void setRegimen(Regimen regimen) {
         this.regimen = regimen;
     }
 
+
+    public LocalDate getFechaInicioReserva() {
+        return fechaInicioReserva;
+    }
     public void setFechaInicioReserva(LocalDate fechaInicioReserva) {
         LocalDate hoy = LocalDate.now();
         LocalDate maxFechaInicioReserva = hoy.plusMonths(MAX_NUMERO_MESES_RESERVA);
@@ -123,6 +102,10 @@ public class Reserva {
         }
     }
 
+
+    public LocalDate getFechaFinReserva() {
+        return fechaFinReserva;
+    }
     public void setFechaFinReserva(LocalDate fechaFinReserva) {
         if(fechaFinReserva.isBefore(fechaInicioReserva)){
             throw new IllegalArgumentException(("La fecha de fin de reserva no puede ser anterior a la fecha de reserva."));
@@ -130,6 +113,10 @@ public class Reserva {
         this.fechaFinReserva = fechaFinReserva;
     }
 
+
+    public LocalDateTime getCheckIn() {
+        return checkIn;
+    }
     public void setCheckIn(LocalDateTime checkIn) {
         if(checkIn.isBefore(fechaInicioReserva.atStartOfDay())){
             throw new IllegalArgumentException("El check-in no puede ser anterior al inicio de la reserva.");
@@ -137,6 +124,10 @@ public class Reserva {
         this.checkIn = checkIn;
     }
 
+
+    public LocalDateTime getCheckOut() {
+        return checkOut;
+    }
     public void setCheckOut(LocalDateTime checkOut) {
         if (checkOut.isBefore(checkIn)) {
             throw new IllegalArgumentException("El check-out no puede ser anterior al check-in.");
@@ -147,6 +138,10 @@ public class Reserva {
         this.checkOut = checkOut;
     }
 
+
+    public double getPrecio() {
+        return precio;
+    }
     private void setPrecio() {
         if (habitacion == null || regimen == null || fechaInicioReserva == null || fechaFinReserva == null) {
             throw new IllegalArgumentException("Los datos de la reserva no est�n completos.");
@@ -171,12 +166,17 @@ public class Reserva {
     }
 
 
+    public int getNumeroPersonas() {
+        return numeroPersonas;
+    }
     public void setNumeroPersonas(int numeroPersonas) {
         if (numeroPersonas > habitacion.getNumeroMaximoPersonas()) {
             throw new IllegalArgumentException("El n�mero de personas supera el n�mero m�ximo permitido para este tipo de habitaci�n.");
         }
         this.numeroPersonas = numeroPersonas;
     }
+
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {
