@@ -1,6 +1,9 @@
 package org.iesalandalus.programacion.reservashotel.modelo;
 
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHuespedes;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Habitaciones;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Huespedes;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.Reservas;
@@ -12,9 +15,9 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class Modelo {
-    private Huespedes huespedes;
-    private Habitaciones habitaciones;
-    private Reservas reservas;
+    private IHuespedes huespedes;
+    private IHabitaciones habitaciones;
+    private IReservas reservas;
 
     public Modelo() {
     }
@@ -24,8 +27,8 @@ public class Modelo {
         huespedes.insertar(huesped1);
         huespedes.insertar(huesped2);
 
-        Habitacion habitacion1 = new Habitacion(1,1,50,TipoHabitacion.SIMPLE);
-        Habitacion habitacion2 = new Habitacion(2,2,50,TipoHabitacion.DOBLE);
+        Simple habitacion1 = new Simple(1,1,50);
+        Doble habitacion2 = new Doble(2,2,50, 2, 0);
         habitaciones.insertar(habitacion1);
         habitaciones.insertar(habitacion2);
 
@@ -105,7 +108,15 @@ public class Modelo {
     public ArrayList<Habitacion> getHabitaciones() {
         ArrayList<Habitacion> copia = new ArrayList<>();
         for (Habitacion habitacion : habitaciones.get()) {
-            copia.add(new Habitacion(habitacion));
+            if (habitacion instanceof Simple) {
+                copia.add(new Simple((Simple) habitacion));
+            } else if (habitacion instanceof Doble) {
+                copia.add(new Doble((Doble) habitacion));
+            } else if (habitacion instanceof Triple) {
+                copia.add(new Triple((Triple) habitacion));
+            } else if (habitacion instanceof Suite) {
+                copia.add(new Suite((Suite) habitacion));
+            }
         }
         return copia;
     }
@@ -113,11 +124,31 @@ public class Modelo {
     public ArrayList<Habitacion> getHabitaciones(TipoHabitacion tipoHabitacion) {
         ArrayList<Habitacion> copia = new ArrayList<>();
             for (Habitacion habitacion : habitaciones.get()) {
-                if (habitacion.getTipoHabitacion().equals(tipoHabitacion)) {
-                    copia.add(new Habitacion(habitacion));  // Usar el constructor de copia
+                switch (tipoHabitacion){
+                    case SIMPLE:
+                        if (habitacion instanceof Simple) {
+                            copia.add(new Simple((Simple) habitacion));
+                        }
+                        break;
+                    case DOBLE:
+                        if (habitacion instanceof Doble) {
+                            copia.add(new Doble((Doble) habitacion));
+                        }
+                        break;
+                    case TRIPLE:
+                        if (habitacion instanceof Triple) {
+                            copia.add(new Triple((Triple) habitacion));
+                        }
+                        break;
+                    case SUITE:
+                        if (habitacion instanceof Suite) {
+                            copia.add(new Suite((Suite) habitacion));
+                        }
+                        break;
+
                 }
             }
-            return copia;  // Devolver array del tama�o correcto
+            return copia;
         }
 
     // Metodos para la gestion de Reserva:
