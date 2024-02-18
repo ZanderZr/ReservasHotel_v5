@@ -43,12 +43,12 @@ public class Suite extends Habitacion{
     @Override
     public String toString() {
         return "Suite{" +
-                "numBanos=" + numBanos +
-                ", tieneJacuzzi=" + tieneJacuzzi +
-                ", identificador='" + identificador + '\'' +
+                "identificador='" + identificador + '\'' +
                 ", planta=" + planta +
                 ", puerta=" + puerta +
                 ", precio=" + precio +
+                ", numBanos=" + numBanos +
+                ", tieneJacuzzi=" + tieneJacuzzi +
                 '}';
     }
 }

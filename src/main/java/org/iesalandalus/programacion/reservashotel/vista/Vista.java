@@ -38,40 +38,7 @@ public class Vista {
         System.out.println("Gracias por utilizar nuestra aplicaci�n. �Hasta pronto!");
         controlador.terminar();
     }
-/*
-    private void ejecutarOpcion(Opcion opcion) {
 
-        switch (opcion) {
-            case SALIR -> {
-                System.out.println("Cerrando la aplicaci�n...");
-                System.exit(0);
-                break;
-            }
-            case INSERTAR_HUESPED -> insertarHuesped();
-            case BUSCAR_HUESPED -> buscarHuesped();
-            case BORRAR_HUESPED -> borrarHuesped();
-            case MOSTRAR_HUESPEDES -> mostrarHuespedes();
-            case INSERTAR_HABITACION -> insertarHabitacion();
-            case BUSCAR_HABITACION -> buscarHabitacion();
-            case BORRAR_HABITACION -> borrarHabitacion();
-            case MOSTRAR_HABITACIONES -> mostrarHabitaciones();
-            case INSERTAR_RESERVA -> insertarReserva();
-            case ANULAR_RESERVA -> anularReserva();
-            case MOSTRAR_RESERVAS -> mostrarReservas();
-            case CONSULTAR_DISPONIBILIDAD -> {
-
-                TipoHabitacion tH = Consola.leerTipoHabitacion();
-                LocalDate fechaI = Consola.leerFecha("Fecha de inicio de reserva:");
-                LocalDate fechaF = Consola.leerFecha("Fecha de fin de reserva:");
-
-                consultarDisponibilidad(tH, fechaI, fechaF);
-            }
-            case REALIZAR_CHECKIN -> realizarCheckin();
-            case REALIZAR_CHECKOUT -> realizarCheckout();
-        }
-    }
-
- */
 
     // Huesped -----------------------------------------------------
     public void insertarHuesped() {

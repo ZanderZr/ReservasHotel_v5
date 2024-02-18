@@ -54,12 +54,12 @@ public class Doble extends Habitacion{
     @Override
     public String toString() {
         return "Doble{" +
-                "numCamasIndividuales=" + numCamasIndividuales +
-                ", numCamasDobles=" + numCamasDobles +
-                ", identificador='" + identificador + '\'' +
+                "identificador='" + identificador  +
                 ", planta=" + planta +
                 ", puerta=" + puerta +
                 ", precio=" + precio +
+                ", numCamasIndividuales=" + numCamasIndividuales +
+                ", numCamasDobles=" + numCamasDobles +
                 '}';
     }
 }

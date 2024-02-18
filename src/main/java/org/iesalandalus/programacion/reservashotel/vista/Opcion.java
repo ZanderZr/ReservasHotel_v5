@@ -75,16 +75,17 @@ public enum Opcion {
             vista.mostrarReservas();
         }
     },
-    LISTAR_RESERVAS_HUESPED("13.- Consultar disponibilidad") {
+    LISTAR_RESERVAS_HUESPED("13.- Listar reservas por huesped") {
         @Override
         public void ejecutar() {
             vista.mostrarReservasHuesped();
         }
     },
-    LISTAR_RESERVAS_TIPO_HABITACION("14.- Consultar disponibilidad") {
+    LISTAR_RESERVAS_TIPO_HABITACION("14.- Listar reservas por tipo de habitacion") {
         @Override
         public void ejecutar() {
             vista.mostrarReservasTipoHabitacion();
+
         }
     },
     CONSULTAR_DISPONIBILIDAD("15.- Consultar disponibilidad") {

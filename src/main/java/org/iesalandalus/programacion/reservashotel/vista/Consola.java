@@ -66,12 +66,18 @@ public class Consola {
                 opcion = Opcion.MOSTRAR_RESERVAS;
                 break;
             case 13:
-                opcion = Opcion.CONSULTAR_DISPONIBILIDAD;
+                opcion = Opcion.LISTAR_RESERVAS_HUESPED;
                 break;
             case 14:
-                opcion = Opcion.REALIZAR_CHECKIN;
+                opcion = Opcion.LISTAR_RESERVAS_TIPO_HABITACION;
                 break;
             case 15:
+                opcion = Opcion.CONSULTAR_DISPONIBILIDAD;
+                break;
+            case 16:
+                opcion = Opcion.REALIZAR_CHECKIN;
+                break;
+            case 17:
                 opcion = Opcion.REALIZAR_CHECKOUT;
                 break;
         }

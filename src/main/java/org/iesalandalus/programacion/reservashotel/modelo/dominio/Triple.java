@@ -67,13 +67,14 @@ public class Triple extends Habitacion{
     @Override
     public String toString() {
         return "Triple{" +
-                "numBanos=" + numBanos +
-                ", numCamasIndividuales=" + numCamasIndividuales +
-                ", numCamasDobles=" + numCamasDobles +
-                ", identificador='" + identificador + '\'' +
+                "identificador='" + identificador + '\'' +
                 ", planta=" + planta +
                 ", puerta=" + puerta +
                 ", precio=" + precio +
+                ", numBanos=" + numBanos +
+                ", numCamasIndividuales=" + numCamasIndividuales +
+                ", numCamasDobles=" + numCamasDobles +
+
                 '}';
     }
 }
