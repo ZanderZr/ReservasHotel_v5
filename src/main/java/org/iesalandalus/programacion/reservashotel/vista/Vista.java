@@ -1,10 +1,7 @@
 package org.iesalandalus.programacion.reservashotel.vista;
 
 import org.iesalandalus.programacion.reservashotel.controlador.Controlador;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.Reserva;
-import org.iesalandalus.programacion.reservashotel.modelo.dominio.TipoHabitacion;
+import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
 import org.iesalandalus.programacion.utilidades.Entrada;
 
 import javax.naming.OperationNotSupportedException;
@@ -15,6 +12,10 @@ import java.util.*;
 public class Vista {
 
     private Controlador controlador;
+
+    public Vista() {
+
+    }
 
     public void setControlador(Controlador controlador) {
         if (controlador == null) {
@@ -37,7 +38,7 @@ public class Vista {
         System.out.println("Gracias por utilizar nuestra aplicaci�n. �Hasta pronto!");
         controlador.terminar();
     }
-
+/*
     private void ejecutarOpcion(Opcion opcion) {
 
         switch (opcion) {
@@ -70,6 +71,8 @@ public class Vista {
         }
     }
 
+ */
+
     // Huesped -----------------------------------------------------
     public void insertarHuesped() {
 
@@ -91,7 +94,7 @@ public class Vista {
         }
     }
 
-    private void buscarHuesped() {
+    public void buscarHuesped() {
         try {
             Huesped huespedFicticio = Consola.getHuespedPorDni();
             Huesped huespedEncontrado = controlador.buscar(huespedFicticio);
@@ -105,7 +108,7 @@ public class Vista {
         }
     }
 
-    private void borrarHuesped() {
+    public void borrarHuesped() {
         try {
             Huesped huespedFicticio = Consola.getHuespedPorDni();
             Huesped huespedBorrado = controlador.buscar(huespedFicticio);
@@ -129,14 +132,14 @@ public class Vista {
         } else {
             huespedes.sort(Comparator.comparing(Huesped::getNombre)); // expresión lambda que compara los huéspedes por su nombre.
             System.out.println("Lista de huéspedes almacenados: ");
-            for(Huesped huesped : huespedes){
+            for (Huesped huesped : huespedes) {
                 System.out.println(huesped);
             }
         }
     }
 
     // Habitacion -----------------------------------------------------
-    private void insertarHabitacion() {
+    public void insertarHabitacion() {
         try {
             Habitacion nuevaHabitacion = Consola.leerHabitacion();
             ArrayList<Habitacion> habitaciones = controlador.getHabitaciones();
@@ -155,7 +158,7 @@ public class Vista {
         }
     }
 
-    private void buscarHabitacion() {
+    public void buscarHabitacion() {
         try {
             Habitacion habitacionFicticia = Consola.leerHabitacionPorIdentificador();
             Habitacion habitacionEncontrada = controlador.buscar(habitacionFicticia);
@@ -169,7 +172,7 @@ public class Vista {
         }
     }
 
-    private void borrarHabitacion() {
+    public void borrarHabitacion() {
         try {
             Habitacion habitacionFicticia = Consola.leerHabitacionPorIdentificador();
             Habitacion habitacionBorrada = controlador.buscar(habitacionFicticia);
@@ -186,7 +189,7 @@ public class Vista {
         }
     }
 
-    private void mostrarHabitaciones() {
+    public void mostrarHabitaciones() {
         ArrayList<Habitacion> habitaciones = controlador.getHabitaciones();
 
         if (habitaciones.size() == 0) {
@@ -202,7 +205,8 @@ public class Vista {
     }
 
     // Reserva -----------------------------------------------------
-    private void insertarReserva() {
+    public void insertarReserva() {
+        Habitacion habitacionDisponible = null;
         try {
             Reserva reservaFicticia = Consola.leerReserva();
             ArrayList<Reserva> reservas = controlador.getReservas();
@@ -227,11 +231,20 @@ public class Vista {
 
             Reserva nuevaReserva = new Reserva(huespedReal, habitacionReal, reservaFicticia.getRegimen(), reservaFicticia.getFechaInicioReserva(), reservaFicticia.getFechaFinReserva(), reservaFicticia.getNumeroPersonas());
 
-            if (nuevaReserva.getNumeroPersonas()< 0 || nuevaReserva.getNumeroPersonas() > nuevaReserva.getHabitacion().getTipoHabitacion().getNumeroMaximoPersonas()){
+            if (nuevaReserva.getNumeroPersonas() < 0 || nuevaReserva.getNumeroPersonas() > nuevaReserva.getHabitacion().getNumeroMaximoPersonas()) {
                 insertarReserva();
             }
             Habitacion habitacionDeseada = nuevaReserva.getHabitacion();
-            Habitacion habitacionDisponible = consultarDisponibilidad(habitacionDeseada.getTipoHabitacion(), nuevaReserva.getFechaInicioReserva(), nuevaReserva.getFechaFinReserva());
+
+            if (habitacionDeseada instanceof Simple){
+                habitacionDisponible = consultarDisponibilidad(TipoHabitacion.SIMPLE, nuevaReserva.getFechaInicioReserva(), nuevaReserva.getFechaFinReserva());
+            } else if (habitacionDeseada instanceof Doble){
+                habitacionDisponible = consultarDisponibilidad(TipoHabitacion.DOBLE, nuevaReserva.getFechaInicioReserva(), nuevaReserva.getFechaFinReserva());
+            } else if (habitacionDeseada instanceof Triple){
+                habitacionDisponible = consultarDisponibilidad(TipoHabitacion.TRIPLE, nuevaReserva.getFechaInicioReserva(), nuevaReserva.getFechaFinReserva());
+            } else if (habitacionDeseada instanceof Suite){
+                habitacionDisponible = consultarDisponibilidad(TipoHabitacion.SUITE, nuevaReserva.getFechaInicioReserva(), nuevaReserva.getFechaFinReserva());
+            }
 
             if (habitacionDisponible != null) {
                 nuevaReserva.setHabitacion(habitacionDisponible);
@@ -252,8 +265,14 @@ public class Vista {
             System.out.println(e.getMessage());
         }
     }
-    private void listarReservas(Huesped huesped) {
-        int i =0;
+
+    public void mostrarReservasHuesped() {
+        Huesped huesped = Consola.getHuespedPorDni();
+        listarReservas(huesped);
+    }
+
+    public void listarReservas(Huesped huesped) {
+        int i = 0;
         try {
             ArrayList<Reserva> reservasH = controlador.getReservas(huesped);
             if (reservasH.size() == 0) {
@@ -264,7 +283,7 @@ public class Vista {
                         .thenComparing(reserva -> reserva.getHabitacion().getPuerta()));
                 System.out.println("Lista de reservas del hu�sped:");
                 for (Reserva reserva : reservasH) {
-                    System.out.print(i +".- ");
+                    System.out.print(i + ".- ");
                     System.out.println(reserva);
                     i++;
                 }
@@ -274,7 +293,39 @@ public class Vista {
         }
     }
 
-    private void listarReservas(TipoHabitacion tipoHabitacion) {
+    public void mostrarReservasTipoHabitacion() {
+        Habitacion hab = Consola.leerHabitacionPorIdentificador();
+        TipoHabitacion tipoHabitacion = null;
+        for (Habitacion habitacion : controlador.getHabitaciones()) {
+            if (hab.equals(habitacion)) {
+                if (habitacion instanceof Simple) {
+                    tipoHabitacion = TipoHabitacion.SIMPLE;
+                } else if (habitacion instanceof Doble) {
+                    tipoHabitacion = TipoHabitacion.DOBLE;
+                } else if (habitacion instanceof Triple) {
+                    tipoHabitacion = TipoHabitacion.TRIPLE;
+                } else if (habitacion instanceof Suite) {
+                    tipoHabitacion = TipoHabitacion.SUITE;
+                } else {
+                    System.out.println("Tipo de habitación desconocido");
+                }
+            }
+        }
+        listarReservas(tipoHabitacion);
+    }
+
+    public void comprobarDisponibilidad() {
+
+        TipoHabitacion tipoHabitacion = Consola.leerTipoHabitacion();
+        LocalDate fecIn = Consola.leerFecha("Introduce la fecha de inicio de la reserva en formato (dd/MM/yyyy)");
+        LocalDate fecFin = Consola.leerFecha("Introduce la fecha de fin de la reserva en formato (dd/MM/yyyy)");
+
+        Habitacion h = consultarDisponibilidad(tipoHabitacion,fecIn,fecFin);
+
+        h.toString();
+    }
+
+    public void listarReservas(TipoHabitacion tipoHabitacion) {
         int i = 0;
         try {
             ArrayList<Reserva> reservasTHab = controlador.getReservas(tipoHabitacion);
@@ -285,7 +336,7 @@ public class Vista {
                         .thenComparing(reserva -> reserva.getHuesped().getNombre()));
                 System.out.println("Lista de reservas del hu�sped:");
                 for (Reserva reserva : reservasTHab) {
-                    System.out.print(i +".- ");
+                    System.out.print(i + ".- ");
                     System.out.print(reserva);
                     i++;
                 }
@@ -295,7 +346,7 @@ public class Vista {
         }
     }
 
-    private ArrayList<Reserva> getReservasAnulables(ArrayList<Reserva> reservasAAnular) {
+    public ArrayList<Reserva> getReservasAnulables(ArrayList<Reserva> reservasAAnular) {
         ArrayList<Reserva> reservasAnulables = new ArrayList<>();
         LocalDate hoy = LocalDate.now(); // Obtenemos la fecha actual.
 
@@ -309,7 +360,7 @@ public class Vista {
         return reservasAnulables;
     }
 
-    private void anularReserva() {
+    public void anularReserva() {
         try {
             System.out.println("Anular su reserva:");
             Huesped huespedFicticio = Consola.getHuespedPorDni();
@@ -336,7 +387,6 @@ public class Vista {
         }
     }
 
-
     public void mostrarReservas() {
         ArrayList<Reserva> reservas = controlador.getReservas();
         if (reservas.size() == 0) {
@@ -352,84 +402,84 @@ public class Vista {
         }
     }
 
-    private Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+    public Habitacion consultarDisponibilidad(TipoHabitacion tipoHabitacion, LocalDate fechaInicio, LocalDate fechaFin) {
+        boolean estaDisponible = false;
         for (Habitacion habitacion : controlador.getHabitaciones()) {
-            if (habitacion.getTipoHabitacion().equals(tipoHabitacion)) {
-                boolean estaDisponible = true;
-                for (Reserva reserva : controlador.getReservas()) {
-                    if (reserva.getHabitacion().equals(habitacion) && !reserva.getFechaFinReserva().isBefore(fechaInicio) && !reserva.getFechaInicioReserva().isAfter(fechaFin)) {
-                        estaDisponible = false;
-                        break;
-                    }
-                }
-                if (estaDisponible) {
-                    return habitacion;
+            if (habitacion instanceof Simple && tipoHabitacion == TipoHabitacion.SIMPLE) {
+                estaDisponible = true;
+            } else if (habitacion instanceof Doble && tipoHabitacion == TipoHabitacion.DOBLE) {
+                estaDisponible = true;
+            } else if (habitacion instanceof Triple && tipoHabitacion == TipoHabitacion.TRIPLE) {
+                estaDisponible = true;
+            } else if (habitacion instanceof Suite && tipoHabitacion == TipoHabitacion.SUITE) {
+                estaDisponible = true;
+            }
+            for (Reserva reserva : controlador.getReservas()) {
+                if (reserva.getHabitacion().equals(habitacion) && !reserva.getFechaFinReserva().isBefore(fechaInicio) && !reserva.getFechaInicioReserva().isAfter(fechaFin)) {
+                    estaDisponible = false;
+                    break;
                 }
             }
+
+            if (estaDisponible) {
+                return habitacion;
+            }
         }
-        System.out.println("Esa habitacion no est� disponible.");
-        return null;
-    }
-
-    private int getNumElementosNoNulos(Reserva[] reservas) {
-        int num= 0;
-        for (Reserva reserva : reservas){
-            num++;
+            System.out.println("Esa habitacion no est� disponible.");
+            return null;
         }
-        return num;
-    }
 
-    private void realizarCheckin() {
-        System.out.println("Introduce el DNI del huésped que ha realizado la reserva");
-        try {
-            Huesped huesped = controlador.buscar(Consola.getHuespedPorDni());
-            ArrayList<Reserva> reservasHuesped = controlador.getReservas(huesped);
+        public void realizarCheckin () {
+            System.out.println("Introduce el DNI del huésped que ha realizado la reserva");
+            try {
+                Huesped huesped = controlador.buscar(Consola.getHuespedPorDni());
+                ArrayList<Reserva> reservasHuesped = controlador.getReservas(huesped);
 
-            if (reservasHuesped.size() > 0) {
-                listarReservas(huesped);
-                System.out.println();
-                System.out.println("Elija a qué reserva quiere hacer el checkin introduciendo su número:");
-                int eleccion = Entrada.entero();
-                if (eleccion >= 0 && eleccion < reservasHuesped.size()) {
-                    controlador.realizarCheckin(reservasHuesped.get(eleccion), LocalDateTime.now());
-                    System.out.println("El check-in para la reserva seleccionada se ha realizado.");
+                if (reservasHuesped.size() > 0) {
+                    listarReservas(huesped);
+                    System.out.println();
+                    System.out.println("Elija a qué reserva quiere hacer el checkin introduciendo su número:");
+                    int eleccion = Entrada.entero();
+                    if (eleccion >= 0 && eleccion < reservasHuesped.size()) {
+                        controlador.realizarCheckin(reservasHuesped.get(eleccion), LocalDateTime.now());
+                        System.out.println("El check-in para la reserva seleccionada se ha realizado.");
+                    } else {
+                        System.out.println("Número de reserva no válido. Por favor, inténtalo de nuevo.");
+                        realizarCheckin();
+                    }
                 } else {
-                    System.out.println("Número de reserva no válido. Por favor, inténtalo de nuevo.");
+                    System.out.println("No se encontraron reservas para el huésped proporcionado. Por favor, introduce un DNI válido.");
                     realizarCheckin();
                 }
-            } else {
-                System.out.println("No se encontraron reservas para el huésped proporcionado. Por favor, introduce un DNI válido.");
-                realizarCheckin();
+            } catch (NoSuchElementException e) {
+                System.out.println("Error a realizar el check-in");
             }
-        } catch (NoSuchElementException e) {
-            System.out.println("Error a realizar el check-in");
         }
-    }
-    private void realizarCheckout() {
-        System.out.println("Introduce el DNI del huésped que ha realizado la reserva");
-        try {
-            Huesped huesped = controlador.buscar(Consola.getHuespedPorDni());
-            ArrayList<Reserva> reservasHuesped = controlador.getReservas(huesped);
+        public void realizarCheckout () {
+            System.out.println("Introduce el DNI del huésped que ha realizado la reserva");
+            try {
+                Huesped huesped = controlador.buscar(Consola.getHuespedPorDni());
+                ArrayList<Reserva> reservasHuesped = controlador.getReservas(huesped);
 
-            if (reservasHuesped.size() > 0) {
-                listarReservas(huesped);
-                System.out.println("Elija a qué reserva quiere hacer el checkout introduciendo su número:");
-                int eleccion = Entrada.entero();
-                if (eleccion >= 0 && eleccion < reservasHuesped.size()) {
-                    controlador.realizarCheckout(reservasHuesped.get(eleccion), LocalDateTime.now());
-                    System.out.println("El checkout para la reserva seleccionada se ha realizado.");
+                if (reservasHuesped.size() > 0) {
+                    listarReservas(huesped);
+                    System.out.println("Elija a qué reserva quiere hacer el checkout introduciendo su número:");
+                    int eleccion = Entrada.entero();
+                    if (eleccion >= 0 && eleccion < reservasHuesped.size()) {
+                        controlador.realizarCheckout(reservasHuesped.get(eleccion), LocalDateTime.now());
+                        System.out.println("El checkout para la reserva seleccionada se ha realizado.");
+                    } else {
+                        System.out.println("Número de reserva no válido. Por favor, inténtalo de nuevo.");
+                        realizarCheckout();
+                    }
                 } else {
-                    System.out.println("Número de reserva no válido. Por favor, inténtalo de nuevo.");
+                    System.out.println("No se encontraron reservas para el huésped proporcionado. Por favor, introduce un DNI válido.");
                     realizarCheckout();
                 }
-            } else {
-                System.out.println("No se encontraron reservas para el huésped proporcionado. Por favor, introduce un DNI válido.");
-                realizarCheckout();
+            } catch (NoSuchElementException e) {
+                System.out.println("Error a realizar el check-out");
             }
-        } catch (NoSuchElementException e) {
-            System.out.println("Error a realizar el check-out");
         }
+
+
     }
-
-
-}
