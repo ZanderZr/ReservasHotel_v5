@@ -29,11 +29,9 @@ public class Controlador {
     }
     public void comenzar() throws OperationNotSupportedException {
         modelo.comenzar();
-        vista.comenzar();
     }
     public void terminar() {
         modelo.terminar();
-        vista.terminar();
     }
 
     public void insertar(Huesped huesped) throws OperationNotSupportedException {
