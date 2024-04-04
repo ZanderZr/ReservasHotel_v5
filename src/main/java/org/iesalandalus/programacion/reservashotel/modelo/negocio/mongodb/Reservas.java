@@ -141,4 +141,14 @@ public class Reservas implements IReservas {
         }
     }
 
+    @Override
+    public void comenzar() {
+
+    }
+
+    @Override
+    public void terminar() {
+
+    }
+
 }

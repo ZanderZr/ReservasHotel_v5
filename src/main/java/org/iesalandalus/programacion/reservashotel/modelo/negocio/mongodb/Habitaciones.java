@@ -78,4 +78,14 @@ public class Habitaciones implements IHabitaciones {
         }
     }
 
+    @Override
+    public void comenzar() {
+
+    }
+
+    @Override
+    public void terminar() {
+
+    }
+
 }

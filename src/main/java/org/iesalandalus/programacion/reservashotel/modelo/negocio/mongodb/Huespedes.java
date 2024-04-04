@@ -50,4 +50,14 @@ public class Huespedes implements IHuespedes {
             throw new NoSuchElementException("El hu�sped a borrar no se encuentra en la colecci�n.");
         }
     }
+
+    @Override
+    public void comenzar() {
+
+    }
+
+    @Override
+    public void terminar() {
+
+    }
 }

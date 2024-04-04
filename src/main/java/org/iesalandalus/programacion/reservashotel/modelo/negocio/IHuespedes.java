@@ -14,4 +14,6 @@ public interface IHuespedes {
     Huesped buscar(Huesped huesped);
     void borrar(Huesped huesped) throws NoSuchElementException;
 
+    void comenzar();
+    void terminar();
 }

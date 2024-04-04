@@ -14,4 +14,7 @@ public interface IHabitaciones {
 
     Habitacion buscar(Habitacion habitacion);
     void borrar(Habitacion habitacion) throws NoSuchElementException;
+
+    void comenzar();
+    void terminar();
 }
