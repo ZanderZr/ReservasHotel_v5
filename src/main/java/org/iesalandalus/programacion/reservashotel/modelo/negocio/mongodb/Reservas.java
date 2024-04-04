@@ -1,4 +1,4 @@
-package org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria;
+package org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb;
 
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
@@ -8,7 +8,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.NoSuchElementException;
 
 public class Reservas implements IReservas {

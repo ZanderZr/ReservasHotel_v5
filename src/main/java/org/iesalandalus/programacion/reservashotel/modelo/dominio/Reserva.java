@@ -2,6 +2,7 @@ package org.iesalandalus.programacion.reservashotel.modelo.dominio;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Objects;
 public class Reserva {
@@ -126,6 +127,7 @@ public class Reserva {
 
 
     public LocalDateTime getCheckOut() {
+
         return checkOut;
     }
     public void setCheckOut(LocalDateTime checkOut) {

@@ -17,6 +17,8 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-suite-engine:1.9.1'
     // Entrada para que el repositorio jitpack.io sepa acceder a la localización de librería entrada
     implementation 'com.github.JRJimenezReyes:entrada:1.0.3'
+    implementation 'org.mongodb:mongodb-driver-sync:5.0.0'
+
 }
 
 test {
