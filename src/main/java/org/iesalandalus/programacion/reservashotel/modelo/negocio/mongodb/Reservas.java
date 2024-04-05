@@ -1,7 +1,13 @@
 package org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
+import org.bson.Document;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb.utilidades.MongoDB;
 
 import javax.naming.OperationNotSupportedException;
 import java.time.LocalDate;
@@ -11,6 +17,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
 public class Reservas implements IReservas {
+    private static final String COLECCION = "reservas";
     private ArrayList<Reserva> coleccionReservas;
 
     public Reservas(){
@@ -18,32 +25,68 @@ public class Reservas implements IReservas {
     }
 
     public ArrayList<Reserva> get(){
-        return new ArrayList<>(coleccionReservas);
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        ArrayList<Reserva> reservas = new ArrayList<>();
+        for (Document doc : collection.find().sort(Sorts.ascending("fecha_inicio_reserva"))) {
+            Reserva reserva = mongoDB.getReserva(doc);
+            reservas.add(reserva);
+        }
+
+        return reservas;
     }
     public int getTamano(){
-        return coleccionReservas.size();
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        long num = collection.countDocuments();
+
+        return (int) num;
     }
     public void insertar(Reserva reserva) throws OperationNotSupportedException {
         if (reserva == null) {
-            throw new IllegalArgumentException("No se puede insertar una reserva nula.");
+            throw new IllegalArgumentException("No se puede insertar un hu�sped nulo.");
         }
         if (buscar(reserva) != null) {
-            throw new OperationNotSupportedException("La reserva ya est� registrada y no se admiten repetidos.");
+            throw new OperationNotSupportedException("El hu�sped ya est� registrado y no se admiten repetidos.");
         }
-        coleccionReservas.add(new Reserva(reserva));
+
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document doc = mongoDB.getDocumento(reserva);
+        collection.insertOne(doc);
     }
 
     public Reserva buscar(Reserva reserva) throws NoSuchElementException {
-       int indice = coleccionReservas.indexOf(reserva);
-       if (indice != -1) {
-           return new Reserva(coleccionReservas.get(indice));
-       }
-       return null;
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("fecha_inicio_reserva", reserva.getFechaInicioReserva());
+        Document result = collection.find(query).first();
+
+        if (result == null) {
+            throw new NoSuchElementException("El hu�sped a buscar no se encuentra en la colecci�n.");
+        } else {
+            return mongoDB.getReserva(result);
+        }
     }
 
     public void borrar(Reserva reserva) throws NoSuchElementException {
-        if (!coleccionReservas.remove(reserva)){
-            throw new NoSuchElementException("La reserva proporcionada no se encuentra en la colección.");
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("fecha_inicio_reserva", reserva.getFechaInicioReserva());
+        DeleteResult result = collection.deleteOne(query);
+
+        if (result.getDeletedCount() == 0) {
+            throw new NoSuchElementException("La reserva a borrar no se encuentra en la colección.");
         }
     }
 
@@ -143,12 +186,15 @@ public class Reservas implements IReservas {
 
     @Override
     public void comenzar() {
-
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> coleccionReservas = database.getCollection(COLECCION);
     }
 
     @Override
     public void terminar() {
-
+        MongoDB mongoDB = new MongoDB();
+        mongoDB.cerrarConexion();
     }
 
 }

@@ -1,14 +1,22 @@
 package org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
+import org.bson.Document;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHuespedes;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb.utilidades.MongoDB;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.NoSuchElementException;
 
 public class Huespedes implements IHuespedes {
 
+    private static final String COLECCION = "huespedes";
     private ArrayList<Huesped> coleccionHuespedes;
 
     public Huespedes() {
@@ -16,14 +24,27 @@ public class Huespedes implements IHuespedes {
     }
 
     public ArrayList<Huesped> get(){
-        ArrayList<Huesped> copia= new ArrayList<>();
-        for (Huesped huesped : coleccionHuespedes){
-            copia.add(new Huesped(huesped));
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        ArrayList<Huesped> huespedes = new ArrayList<>();
+        for (Document doc : collection.find().sort(Sorts.ascending("dni"))) {
+            Huesped huesped = mongoDB.getHuesped(doc);
+            huespedes.add(huesped);
         }
-        return copia;
+
+        return huespedes;
     }
+
     public int getTamano(){
-        return coleccionHuespedes.size();
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        long num = collection.countDocuments();
+
+        return (int) num;
     }
 
     public void insertar(Huesped huesped) throws OperationNotSupportedException {
@@ -34,30 +55,52 @@ public class Huespedes implements IHuespedes {
             throw new OperationNotSupportedException("El hu�sped ya est� registrado y no se admiten repetidos.");
         }
 
-        coleccionHuespedes.add(huesped);
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document doc = mongoDB.getDocumento(huesped);
+        collection.insertOne(doc);
     }
 
-    public Huesped buscar(Huesped huesped) {
-        int indice = coleccionHuespedes.indexOf(huesped);
-            if (indice != -1) {
-                return coleccionHuespedes.get(indice);
-            }
-        return null;
+    public Huesped buscar(Huesped huesped) throws NoSuchElementException{
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("dni", huesped.getDni());
+        Document result = collection.find(query).first();
+
+        if (result == null) {
+            throw new NoSuchElementException("El hu�sped a buscar no se encuentra en la colecci�n.");
+        } else {
+            return mongoDB.getHuesped(result);
+        }
     }
 
     public void borrar(Huesped huesped) throws NoSuchElementException {
-        if (!coleccionHuespedes.remove(huesped)) {
-            throw new NoSuchElementException("El hu�sped a borrar no se encuentra en la colecci�n.");
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("dni", huesped.getDni());
+        DeleteResult result = collection.deleteOne(query);
+
+        if (result.getDeletedCount() == 0) {
+            throw new NoSuchElementException("El huésped a borrar no se encuentra en la colección.");
         }
     }
 
     @Override
     public void comenzar() {
-
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> coleccionHuespedes = database.getCollection(COLECCION);
     }
 
     @Override
     public void terminar() {
-
+        MongoDB mongoDB = new MongoDB();
+        mongoDB.cerrarConexion();
     }
 }

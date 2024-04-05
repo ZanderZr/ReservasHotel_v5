@@ -49,6 +49,7 @@ public class MongoDB {
     public static final String JACUZZI = "jacuzzi";
     public static final String REGIMEN = "regimen";
     public static final String FECHA_INICIO_RESERVA = "fecha_inicio_reserva";
+    public static final String FECHA_FIN_RESERVA = "fecha_fin_reserva";
     public static final String CHECKIN = "checkin";
     public static final String CHECKOUT = "checkout";
     public static final String PRECIO_RESERVA = "precio_reserva";
@@ -58,7 +59,7 @@ public class MongoDB {
 
     // --- METODOS --
 
-    private MongoDB(){
+    public MongoDB(){
     }
 
     public MongoDatabase getBD(){
@@ -95,7 +96,6 @@ public class MongoDB {
                 .append(FECHA_NACIMIENTO, huesped.getFechaNacimiento().format(FORMATO_DIA));
         return documentoHuesped;
     }
-
     public Huesped getHuesped(Document documentoHuesped) {
         String nombre = documentoHuesped.getString(NOMBRE);
         String dni = documentoHuesped.getString(DNI);
@@ -106,7 +106,6 @@ public class MongoDB {
         // Crear y devolver un nuevo objeto Huesped con los valores obtenidos
         return new Huesped(nombre, dni, telefono, correo, fechaNacimiento);
     }
-
     public Document getDocumento(Habitacion habitacion) {
         Document documentoHabitacion = new Document();
         documentoHabitacion.append(IDENTIFICADOR, habitacion.getIdentificador())
@@ -133,10 +132,9 @@ public class MongoDB {
                     .append(CAMAS_INDIVIDUALES, triple.getNumCamasIndividuales())
                     .append(CAMAS_DOBLES, triple.getNumCamasDobles());
         }
-
+        documentoHabitacion.append(HABITACION_TIPO, TIPO);
         return documentoHabitacion;
     }
-
     public Habitacion getHabitacion(Document documentoHabitacion) {
         String tipo = documentoHabitacion.getString(TIPO);
         Habitacion habitacion;
@@ -179,8 +177,6 @@ public class MongoDB {
 
         return habitacion;
     }
-
-
     public Document getDocumento(Reserva reserva) {
         Document documentoReserva = new Document();
         documentoReserva.append(HUESPED_DNI, reserva.getHuesped().getDni())
@@ -193,8 +189,26 @@ public class MongoDB {
                 .append(NUMERO_PERSONAS, reserva.getNumeroPersonas());
         return documentoReserva;
     }
-
     public Reserva getReserva(Document documentoReserva){
-        return null;
+
+        Document huespedDoc = documentoReserva.get(HUESPED, Document.class); // Obtener el documento del huesped
+        Huesped huesped = getHuesped(huespedDoc);
+
+        Document habitacionDoc = documentoReserva.get(HABITACION, Document.class);
+        Habitacion habitacion = getHabitacion(habitacionDoc);
+
+        // Obtener el valor del campo REGIMEN como una cadena
+        String regimenStr = documentoReserva.getString(REGIMEN);
+
+        // Convertir la cadena a un enum Regimen
+        Regimen regimen = Regimen.valueOf(regimenStr);
+
+        String fechaInicioReservaString = documentoReserva.getString(FECHA_INICIO_RESERVA);
+        LocalDate fechaInicioReservaLocalDate = LocalDate.parse(fechaInicioReservaString, FORMATO_DIA);
+        String fechaFinReservaString = documentoReserva.getString(FECHA_FIN_RESERVA);
+        LocalDate fechaFinReservaLocalDate = LocalDate.parse(fechaFinReservaString, FORMATO_DIA);
+        Integer numeroPersonas = documentoReserva.getInteger(NUMERO_PERSONAS);
+
+        return new Reserva(huesped, habitacion, regimen, fechaInicioReservaLocalDate, fechaFinReservaLocalDate, numeroPersonas);
     }
 }

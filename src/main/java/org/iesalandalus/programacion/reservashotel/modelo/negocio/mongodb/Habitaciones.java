@@ -1,7 +1,13 @@
 package org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb;
 
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import com.mongodb.client.model.Sorts;
+import com.mongodb.client.result.DeleteResult;
+import org.bson.Document;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb.utilidades.MongoDB;
 
 import javax.naming.OperationNotSupportedException;
 import java.util.ArrayList;
@@ -9,6 +15,7 @@ import java.util.NoSuchElementException;
 
 public class Habitaciones implements IHabitaciones {
     private ArrayList<Habitacion> coleccionHabitaciones;
+    private static final String COLECCION = "habitaciones";
 
     public Habitaciones() {
         this.coleccionHabitaciones = new ArrayList<>();
@@ -16,8 +23,16 @@ public class Habitaciones implements IHabitaciones {
 
 
     public ArrayList<Habitacion> get() {
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
 
-        return new ArrayList<>(coleccionHabitaciones);
+        ArrayList<Habitacion> habitaciones = new ArrayList<>();
+        for (Document doc : collection.find().sort(Sorts.ascending("identificador"))) {
+            Habitacion habitacion = mongoDB.getHabitacion(doc);
+            habitaciones.add(habitacion);
+        }
+        return habitaciones;
     }
 
     public ArrayList<Habitacion> get(TipoHabitacion tipoHabitacion) {
@@ -51,7 +66,13 @@ public class Habitaciones implements IHabitaciones {
     }
 
     public int getTamano() {
-        return coleccionHabitaciones.size();
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        long tamano = collection.countDocuments();
+
+        return (int) tamano;
     }
 
     public void insertar(Habitacion habitacion) throws OperationNotSupportedException {
@@ -61,31 +82,54 @@ public class Habitaciones implements IHabitaciones {
         if (buscar(habitacion) != null) {
             throw new OperationNotSupportedException("La habitación ya existe y no se admiten repetidos.");
         }
-        coleccionHabitaciones.add(habitacion);
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document doc = mongoDB.getDocumento(habitacion);
+        collection.insertOne(doc);
     }
 
     public Habitacion buscar(Habitacion habitacion) {
-        int indice = coleccionHabitaciones.indexOf(habitacion);
-        if (indice != -1) {
-            return coleccionHabitaciones.get(indice);
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("identificador", habitacion.getIdentificador());
+        Document result = collection.find(query).first();
+
+        if (result == null) {
+            throw new NoSuchElementException("La habitacion a buscar no se encuentra en la colecci?n.");
+        } else {
+            return mongoDB.getHabitacion(result);
         }
-        return null;
     }
 
     public void borrar(Habitacion habitacion) throws NoSuchElementException {
-        if (!coleccionHabitaciones.remove(habitacion)) {
+
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> collection = database.getCollection(COLECCION);
+
+        Document query = new Document("identificador", habitacion.getIdentificador());
+        DeleteResult result = collection.deleteOne(query);
+
+        if (result.getDeletedCount() == 0) {
             throw new NoSuchElementException("La habitación proporcionada no se encuentra en la colección.");
         }
     }
 
     @Override
     public void comenzar() {
-
+        MongoDB mongoDB = new MongoDB();
+        MongoDatabase database = mongoDB.getBD();
+        MongoCollection<Document> coleccionHabitaciones = database.getCollection(COLECCION);
     }
 
     @Override
     public void terminar() {
-
+        MongoDB mongoDB = new MongoDB();
+        mongoDB.cerrarConexion();
     }
 
 }
