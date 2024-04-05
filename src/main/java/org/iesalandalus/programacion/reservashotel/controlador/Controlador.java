@@ -1,5 +1,6 @@
 package org.iesalandalus.programacion.reservashotel.controlador;
 
+import org.iesalandalus.programacion.reservashotel.modelo.IModelo;
 import org.iesalandalus.programacion.reservashotel.modelo.Modelo;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.Habitacion;
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.Huesped;
@@ -13,7 +14,7 @@ import java.util.ArrayList;
 
 public class Controlador {
 
-    private Modelo modelo;
+    private IModelo modelo;
     private Vista vista;
 
     public Controlador(Modelo modelo, Vista vista) {

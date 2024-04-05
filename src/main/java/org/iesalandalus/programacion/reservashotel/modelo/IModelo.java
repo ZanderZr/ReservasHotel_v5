@@ -11,7 +11,7 @@ import java.util.ArrayList;
 
 public interface IModelo {
 
-    void comenzar();
+    void comenzar() throws OperationNotSupportedException;
     void terminar();
 
     void insertar(Huesped huesped) throws OperationNotSupportedException;
