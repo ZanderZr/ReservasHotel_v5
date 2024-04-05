@@ -1,6 +1,7 @@
 package org.iesalandalus.programacion.reservashotel.modelo;
 
 import org.iesalandalus.programacion.reservashotel.modelo.dominio.*;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.IFuenteDatos;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHabitaciones;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IHuespedes;
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.IReservas;
@@ -14,12 +15,21 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 
-public class Modelo {
+public class Modelo implements IModelo{
+
+    private IFuenteDatos fuenteDatos;
     private IHuespedes huespedes;
     private IHabitaciones habitaciones;
     private IReservas reservas;
 
-    public Modelo() {
+    public Modelo(IFuenteDatos fuenteDatos) {
+        this.fuenteDatos = fuenteDatos;
+        this.huespedes = fuenteDatos.crearHuespedes();
+        this.habitaciones = fuenteDatos.crearHabitaciones();
+        this.reservas = fuenteDatos.crearReservas();
+        this.huespedes.comenzar();
+        this.habitaciones.comenzar();
+        this.reservas.comenzar();
     }
     public void pruebas() throws OperationNotSupportedException {
         Huesped huesped1 = new Huesped("jojo", "666777666", "j0@gmail.com", "76660251D", LocalDate.now().minusYears(20));
@@ -38,13 +48,16 @@ public class Modelo {
         reservas.insertar(reserva2);
     }
     public void comenzar() throws OperationNotSupportedException {
-        huespedes = new Huespedes();
-        habitaciones = new Habitaciones();
-        reservas = new Reservas();
+        huespedes = fuenteDatos.crearHuespedes();
+        habitaciones = fuenteDatos.crearHabitaciones();
+        reservas = fuenteDatos.crearReservas();
         pruebas();
     }
 
     public void terminar() {
+        huespedes.terminar();
+        habitaciones.terminar();
+        reservas.terminar();
         System.out.println("Info: El modelo ha terminado.");
     }
 
@@ -151,6 +164,7 @@ public class Modelo {
             return copia;
         }
 
+
     // Metodos para la gestion de Reserva:
     public void insertar(Reserva reserva) throws OperationNotSupportedException {
         if (reservas.buscar(reserva) == null) {
@@ -187,6 +201,9 @@ public class Modelo {
         return reservas.getReservas(tipoHabitacion);
     }
 
+    public ArrayList<Reserva> getReservas(Habitacion habitacion){
+        return reservas.getReservas(habitacion);
+    }
     public ArrayList<Reserva> getReservasFuturas(Habitacion habitacion){
        return reservas.getReservasFuturas(habitacion);
     }
@@ -196,5 +213,12 @@ public class Modelo {
    }
    public void realizarCheckout (Reserva reserva, LocalDateTime fecha){
         reservas.realizarCheckout(reserva, fecha);
+   }
+
+   private void setFuenteDatos(IFuenteDatos fuenteDatos){
+       if (fuenteDatos == null) {
+           throw new IllegalArgumentException("La fuente de datos no puede ser nula.");
+       }
+       this.fuenteDatos = fuenteDatos;
    }
 }

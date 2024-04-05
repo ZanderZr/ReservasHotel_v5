@@ -135,6 +135,18 @@ public class Reservas implements IReservas {
         return reservasTipoHabitacion;
     }
 
+    public ArrayList<Reserva> getReservas(Habitacion habitacion){
+        ArrayList<Reserva> reservasHabitacion = new ArrayList<>();
+        for ( Reserva reserva : coleccionReservas){
+            if (reserva.getHabitacion().equals(habitacion)){
+                reservasHabitacion.add(new Reserva(reserva));
+            }
+        }
+        if (reservasHabitacion.isEmpty()) {
+            throw new NoSuchElementException("No se encontraron reservas para la habitacion.");
+        }
+        return reservasHabitacion;
+    }
     public ArrayList<Reserva> getReservasFuturas(Habitacion habitacion) {
         ArrayList<Reserva> reservasFuturas = new ArrayList<>();
         for (Reserva reserva : coleccionReservas) {

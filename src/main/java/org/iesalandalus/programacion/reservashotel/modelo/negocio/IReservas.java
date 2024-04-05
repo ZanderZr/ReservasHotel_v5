@@ -19,6 +19,7 @@ public interface IReservas {
     void borrar (Reserva reserva) throws NoSuchElementException;
     ArrayList<Reserva> getReservas(Huesped huesped);
     ArrayList<Reserva> getReservas(TipoHabitacion tipoHabitacion);
+    ArrayList<Reserva> getReservas(Habitacion habitacion);
     ArrayList<Reserva> getReservasFuturas(Habitacion habitacion);
     void realizarCheckin(Reserva reserva, LocalDateTime fechaHora);
     void realizarCheckout(Reserva reserva, LocalDateTime fechaHora);
