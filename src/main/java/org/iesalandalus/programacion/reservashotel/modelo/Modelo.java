@@ -31,27 +31,11 @@ public class Modelo implements IModelo{
         this.habitaciones.comenzar();
         this.reservas.comenzar();
     }
-    public void pruebas() throws OperationNotSupportedException {
-        Huesped huesped1 = new Huesped("jojo", "666777666", "j0@gmail.com", "76660251D", LocalDate.now().minusYears(20));
-        Huesped huesped2 = new Huesped("jaja", "666777667", "ja@gmail.com", "76660252X", LocalDate.now().minusYears(20));
-        huespedes.insertar(huesped1);
-        huespedes.insertar(huesped2);
 
-        Simple habitacion1 = new Simple(1,1,50);
-        Doble habitacion2 = new Doble(2,2,50, 2, 0);
-        habitaciones.insertar(habitacion1);
-        habitaciones.insertar(habitacion2);
-
-        Reserva reserva1 = new Reserva(huesped1, habitacion1, Regimen.PENSION_COMPLETA, LocalDate.now(), LocalDate.now().plusDays(1), 1);
-        Reserva reserva2 = new Reserva(huesped1, habitacion2, Regimen.MEDIA_PENSION, LocalDate.now(), LocalDate.now().plusDays(1), 1);
-        reservas.insertar(reserva1);
-        reservas.insertar(reserva2);
-    }
     public void comenzar() throws OperationNotSupportedException {
         huespedes = fuenteDatos.crearHuespedes();
         habitaciones = fuenteDatos.crearHabitaciones();
         reservas = fuenteDatos.crearReservas();
-        pruebas();
     }
 
     public void terminar() {

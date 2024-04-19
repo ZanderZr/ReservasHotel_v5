@@ -20,7 +20,7 @@ public class MongoDB {
     public static final DateTimeFormatter FORMATO_DIA_HORA = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
     private static final String USUARIO = "reservashotel";
     private static final String CONTRASENA = "reservashotel-2024";
-    private static final String SERVIDOR = "mongodb+srv://r"+USUARIO+":"+CONTRASENA+"@clusterreservashotel.nkgaokt.mongodb.net/?retryWrites=true&w=majority&appName=ClusterReservasHotel";
+    private static final String SERVIDOR = "mongodb+srv://"+USUARIO+":"+CONTRASENA+"@clusterreservashotel.nkgaokt.mongodb.net/";
 
     private static final int PUERTO = 27017;
     private static final String BD = "reservashotel";
@@ -86,7 +86,6 @@ public class MongoDB {
             conexion.close();
         }
     }
-
     public Document getDocumento(Huesped huesped) {
         Document documentoHuesped = new Document();
         documentoHuesped.append(NOMBRE, huesped.getNombre())

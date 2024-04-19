@@ -1,7 +1,7 @@
 package org.iesalandalus.programacion.reservashotel.modelo.negocio;
 
 import org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb.FuenteDatosMongoDB;
-import org.iesalandalus.programacion.reservashotel.modelo.negocio.mongodb.memoria.FuenteDatosMemoria;
+import org.iesalandalus.programacion.reservashotel.modelo.negocio.memoria.FuenteDatosMemoria;
 
 public enum FactoriaFuenteDatos {
 
